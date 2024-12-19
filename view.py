@@ -20,9 +20,9 @@ class BairrosBH(QWidget):
         self.generate_gpx_button = QPushButton("Gerar GPX")
 
         layout.addWidget(self.label)
+        layout.addWidget(self.save_json_button)
         layout.addWidget(self.combo_neighborhoods)
         layout.addWidget(self.generate_gpx_button)
-        layout.addWidget(self.save_json_button)
 
         self.generate_gpx_button.clicked.connect(self.generate_gpx)
         self.save_json_button.clicked.connect(self.save_json)
