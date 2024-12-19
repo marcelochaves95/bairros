@@ -1,4 +1,4 @@
-# BH Map
-BH Map is a tool to generate GPX based on maps of neighborhoods in my hometown, Belo Horizonte.
+# Bairros
+Ferramenta para geração de GPX a partir dos bairros de Belo Horizonte.
 
 ![](assets/bh-map.png)
