@@ -1,7 +1,7 @@
-import json
-import os
 from pyproj import Proj, Transformer
 from xml.dom import minidom
+import json
+import os
 import xml.etree.ElementTree as ET
 
 url = "https://geoservicos.pbh.gov.br/geoserver/wfs?service=WFS&version=1.0.0&request=GetFeature&typeName=ide_bhgeo:BAIRRO_POPULAR&srsName=EPSG:31983&outputFormat=application%2Fjson"
@@ -15,7 +15,7 @@ def convert_utm_to_latlon(x, y):
     latitude, longitude = transformer.transform(x, y)
     return latitude, longitude
 
-def save_bairros_to_json(data, file_path="bairros.json"):
+def save_neighborhoods_to_json(data, file_path="bairros.json"):
     if os.path.exists(file_path):
         response = input(f"O arquivo {file_path} já existe. Deseja substituir? (s/n): ")
         if response.lower() != 's':
@@ -26,22 +26,21 @@ def save_bairros_to_json(data, file_path="bairros.json"):
         json.dump(data, f, ensure_ascii=False, indent=4)
     print(f"Arquivo {file_path} salvo com sucesso!")
 
-
 def fetch_neighborhoods():    
     from selenium import webdriver
     from selenium.webdriver.common.by import By
-    
+
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     driver = webdriver.Chrome(options=options)
-    
+
     try:
         driver.get(url)
         response = driver.find_element(By.TAG_NAME, "pre").text
         driver.quit()
-        
+
         data = json.loads(response)
-        
+
         neighborhoods = {
             feature["properties"].get("NOME", "Nome não disponível"): feature["geometry"]["coordinates"]
             for feature in data.get("features", [])
@@ -55,7 +54,7 @@ def fetch_neighborhoods():
         raise RuntimeError(f"Erro ao buscar os dados: {e}")
 
 def generate_gpx(selected_neighborhood, coordinates, elevation=1045.55):
-    gpx = ET.Element("gpx", version="1.1", creator="BairrosBH", xmlns="http://www.topografix.com/GPX/1/1")
+    gpx = ET.Element("gpx", version="1.1", creator="Bairros BH", xmlns="http://www.topografix.com/GPX/1/1")
 
     trk = ET.SubElement(gpx, "trk")
     ET.SubElement(trk, "name").text = selected_neighborhood
@@ -66,11 +65,8 @@ def generate_gpx(selected_neighborhood, coordinates, elevation=1045.55):
         for coord in polygon:
             for point in coord:
                 longitude, latitude = convert_utm_to_latlon(point[0], point[1])
-
                 trkpt = ET.SubElement(trkseg, "trkpt", lat=str(latitude), lon=str(longitude))
-
                 ET.SubElement(trkpt, "ele").text = str(elevation)
-
                 ET.SubElement(trkpt, "name").text = selected_neighborhood
 
     tree = ET.ElementTree(gpx)

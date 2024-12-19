@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QVBoxLayout, QPushButton, QLabel, QWidget, QMessageBox, QComboBox, QLineEdit, QHBoxLayout
+from service import fetch_neighborhoods, generate_gpx
 import json
 import os
-from service import fetch_neighborhoods, generate_gpx
 
 class BairrosBH(QWidget):
     def __init__(self):
@@ -38,7 +38,7 @@ class BairrosBH(QWidget):
                 self.combo_neighborhoods.clear()
                 self.combo_neighborhoods.setEditable(True)
                 self.combo_neighborhoods.addItems(neighborhoods.keys())
-                self.bairros_data = neighborhoods
+                self.neighborhoods_data = neighborhoods
                 self.label.setText("Escolha um bairro e clique em 'Gerar GPX'.")
             else:
                 self.label.setText("Nenhum bairro encontrado.")
@@ -46,11 +46,11 @@ class BairrosBH(QWidget):
             QMessageBox.critical(self, "Erro", str(e))
 
     def generate_gpx(self):
-        selected_bairro = self.combo_neighborhoods.currentText()
-        if selected_bairro:
-            coordinates = self.bairros_data.get(selected_bairro)
+        selected_neighborhood = self.combo_neighborhoods.currentText()
+        if selected_neighborhood:
+            coordinates = self.neighborhoods_data.get(selected_neighborhood)
             if coordinates:
-                result = generate_gpx(selected_bairro, coordinates)
+                result = generate_gpx(selected_neighborhood, coordinates)
                 QMessageBox.information(self, "Sucesso", result)
             else:
                 QMessageBox.critical(self, "Erro", "Coordenadas não encontradas para o bairro selecionado.")
@@ -58,9 +58,9 @@ class BairrosBH(QWidget):
             QMessageBox.warning(self, "Aviso", "Por favor, selecione um bairro.")
 
     def save_json(self):
-        if hasattr(self, 'bairros_data') and self.bairros_data:
+        if hasattr(self, 'neighborhoods_data') and self.neighborhoods_data:
             file_path = "bairros.json"
-            
+
             if os.path.exists(file_path):
                 reply = QMessageBox.question(self, 'Confirmar', 
                                              f"O arquivo {file_path} já existe. Deseja substituir?", 
@@ -68,10 +68,10 @@ class BairrosBH(QWidget):
                                              QMessageBox.StandardButton.No)
                 if reply == QMessageBox.StandardButton.No:
                     return
-            
+
             try:
                 with open(file_path, 'w', encoding='utf-8') as f:
-                    json.dump(self.bairros_data, f, ensure_ascii=False, indent=4)
+                    json.dump(self.neighborhoods_data, f, ensure_ascii=False, indent=4)
                 QMessageBox.information(self, "Sucesso", f"Arquivo {file_path} salvo com sucesso!")
             except Exception as e:
                 QMessageBox.critical(self, "Erro", f"Erro ao salvar o arquivo: {str(e)}")
