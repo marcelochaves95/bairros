@@ -4,9 +4,9 @@ with open("requirements.txt", "r", encoding="utf-8") as f:
     requirements = f.read().splitlines()
 
 setup(
-    name="bh-map",
+    name="bairros",
     version="1.0.0",
-    description="BH Map is a tool to generate GPX based on maps of neighborhoods in my hometown, Belo Horizonte.",
+    description="Ferramenta para geração de arquivos GPX a partir de mapas de bairros de Belo Horizonte.",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     author="Marcelo Chaves",
@@ -17,7 +17,7 @@ setup(
     install_requires=requirements,
     entry_points={
         "console_scripts": [
-            "bh-map=bh_map.main:main",
+            "bairros=bairros.main:main",
         ],
     },
     classifiers=[

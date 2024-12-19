@@ -27,14 +27,14 @@ def convert_utm_to_latitude_and_longitude(x, y):
 
 def save_neighborhoods_to_json(data, file_path="resources/neighborhoods.json"):
     if os.path.exists(file_path):
-        response = input(f"The file {file_path} already exists. Do you want to overwrite? (y/n): ")
-        if response.lower() != 'y':
-            print("File was not overwritten.")
+        response = input(f"O arquivo {file_path} já existe. Deseja sobrescrevê-lo? (s/n): ")
+        if response.lower() != 's':
+            print("O arquivo não foi sobrescrito.")
             return
 
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
-    print(f"File {file_path} saved successfully!")
+    print(f"Arquivo {file_path} salvo com sucesso!")
 
 def fetch_neighborhoods():
     options = webdriver.ChromeOptions()
@@ -50,17 +50,17 @@ def fetch_neighborhoods():
         data = json.loads(response)
 
         neighborhoods = {
-            feature["properties"].get("NOME", "Name not available"): feature["geometry"]["coordinates"]
+            feature["properties"].get("NOME", "Nome não disponível"): feature["geometry"]["coordinates"]
             for feature in data.get("features", [])
         }
 
         return dict(sorted(neighborhoods.items()))
     except Exception as e:
         driver.quit()
-        raise RuntimeError(f"Error fetching the data: {e}")
+        raise RuntimeError(f"Erro ao buscar os dados: {e}")
 
 def generate_gpx(selected_neighborhood, coordinates, file_path, elevation=1045.55):
-    gpx = ET.Element("gpx", version="1.1", creator="BH Map", xmlns="http://www.topografix.com/GPX/1/1")
+    gpx = ET.Element("gpx", version="1.1", creator="Bairros", xmlns="http://www.topografix.com/GPX/1/1")
     trk = ET.SubElement(gpx, "trk")
     ET.SubElement(trk, "name").text = selected_neighborhood
     trkseg = ET.SubElement(trk, "trkseg")
@@ -81,4 +81,4 @@ def generate_gpx(selected_neighborhood, coordinates, file_path, elevation=1045.5
     with open(file_path, "w", encoding="UTF-8") as f:
         f.write(reparsed.toprettyxml(indent="  "))
 
-    return f"GPX file saved successfully at {file_path}."
+    return f"Arquivo GPX salvo com sucesso em {file_path}."
