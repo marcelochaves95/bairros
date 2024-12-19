@@ -63,10 +63,8 @@ def fetch_neighborhoods():
 
 def generate_gpx(selected_neighborhood, coordinates, file_path, elevation=1045.55):
     gpx = ET.Element("gpx", version="1.1", creator="BH Map", xmlns="http://www.topografix.com/GPX/1/1")
-
     trk = ET.SubElement(gpx, "trk")
     ET.SubElement(trk, "name").text = selected_neighborhood
-
     trkseg = ET.SubElement(trk, "trkseg")
 
     for polygon in coordinates:

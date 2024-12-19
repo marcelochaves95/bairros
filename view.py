@@ -1,4 +1,5 @@
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QVBoxLayout, QFileDialog, QPushButton, QLabel, QWidget, QMessageBox, QComboBox, QLineEdit, QHBoxLayout
 from service import fetch_neighborhoods, generate_gpx
 
@@ -11,9 +12,12 @@ class BHMap(QWidget):
         self.setWindowTitle("BH Map")
         self.setGeometry(200, 200, 400, 300)
 
+        icon_path = "icon.png"
+        self.setWindowIcon(QIcon(icon_path))
+
         layout = QVBoxLayout()
 
-        self.label = QLabel("Select a neighborhood and click 'Generate GPX'")
+        self.label = QLabel("Choose a neighborhood and click 'Generate GPX'.")
         self.combo_neighborhoods = QComboBox()
         self.generate_gpx_button = QPushButton("Generate GPX")
 
@@ -60,13 +64,7 @@ class BHMap(QWidget):
             QMessageBox.critical(self, "Error", "Coordinates not found for the selected neighborhood.")
             return
 
-        # Open a file dialog to choose the save location
-        file_path, _ = QFileDialog.getSaveFileName(
-            self,
-            "Save GPX File",
-            f"{selected_neighborhood.replace(' ', '_')}.gpx",  # Default file name
-            "GPX Files (*.gpx)"
-        )
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save GPX File", f"{selected_neighborhood.replace(' ', '_')}.gpx", "GPX Files (*.gpx)")
 
         if file_path:
             try:
