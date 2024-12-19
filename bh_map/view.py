@@ -1,12 +1,13 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QVBoxLayout, QFileDialog, QPushButton, QLabel, QWidget, QMessageBox, QComboBox, QLineEdit, QHBoxLayout
+from PyQt6.QtWidgets import QVBoxLayout, QFileDialog, QPushButton, QLabel, QWidget, QMessageBox, QComboBox
 from service import fetch_neighborhoods, generate_gpx
 
 class BHMap(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
+        self.load_neighborhoods()
 
     def init_ui(self):
         self.setWindowTitle("BH Map")
@@ -17,21 +18,26 @@ class BHMap(QWidget):
 
         layout = QVBoxLayout()
 
-        self.label = QLabel("Choose a neighborhood and click 'Generate GPX'.")
+        self.label = QLabel("Loading neighborhoods...")
         self.combo_neighborhoods = QComboBox()
         self.generate_gpx_button = QPushButton("Generate GPX")
+        self.load_neighborhoods_button = QPushButton("Load Neighborhoods")
 
         layout.addWidget(self.label)
+        layout.addWidget(self.load_neighborhoods_button)
         layout.addWidget(self.combo_neighborhoods)
         layout.addWidget(self.generate_gpx_button)
 
         self.generate_gpx_button.clicked.connect(self.generate_gpx)
+        self.load_neighborhoods_button.clicked.connect(self.load_neighborhoods)
 
         self.setLayout(layout)
 
-        self.load_neighborhoods()
-
     def load_neighborhoods(self):
+        self.label.setText("Loading neighborhoods...")
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.repaint()
+
         try:
             neighborhoods = fetch_neighborhoods()
             if neighborhoods:
@@ -47,11 +53,13 @@ class BHMap(QWidget):
                     text-align: center;
                     margin: 10px 0;
                 """)
-
             else:
                 self.label.setText("No neighborhoods found.")
         except RuntimeError as e:
             QMessageBox.critical(self, "Error", str(e))
+            self.label.setText("Failed to load neighborhoods.")
+        finally:
+            self.label.repaint()
 
     def generate_gpx(self):
         selected_neighborhood = self.combo_neighborhoods.currentText()

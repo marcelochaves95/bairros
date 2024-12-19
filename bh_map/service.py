@@ -54,9 +54,7 @@ def fetch_neighborhoods():
             for feature in data.get("features", [])
         }
 
-        neighborhoods = dict(sorted(neighborhoods.items()))
-
-        return neighborhoods
+        return dict(sorted(neighborhoods.items()))
     except Exception as e:
         driver.quit()
         raise RuntimeError(f"Error fetching the data: {e}")
@@ -84,4 +82,3 @@ def generate_gpx(selected_neighborhood, coordinates, file_path, elevation=1045.5
         f.write(reparsed.toprettyxml(indent="  "))
 
     return f"GPX file saved successfully at {file_path}."
-
