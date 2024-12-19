@@ -1,8 +1,6 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QVBoxLayout, QPushButton, QLabel, QWidget, QMessageBox, QComboBox, QLineEdit, QHBoxLayout
+from PyQt6.QtWidgets import QVBoxLayout, QFileDialog, QPushButton, QLabel, QWidget, QMessageBox, QComboBox, QLineEdit, QHBoxLayout
 from service import fetch_neighborhoods, generate_gpx
-import json
-import os
 
 class BHMap(QWidget):
     def __init__(self):
@@ -17,16 +15,13 @@ class BHMap(QWidget):
 
         self.label = QLabel("Select a neighborhood and click 'Generate GPX'")
         self.combo_neighborhoods = QComboBox()
-        self.save_json_button = QPushButton("Update Neighborhoods")
         self.generate_gpx_button = QPushButton("Generate GPX")
 
         layout.addWidget(self.label)
-        layout.addWidget(self.save_json_button)
         layout.addWidget(self.combo_neighborhoods)
         layout.addWidget(self.generate_gpx_button)
 
         self.generate_gpx_button.clicked.connect(self.generate_gpx)
-        self.save_json_button.clicked.connect(self.save_json)
 
         self.setLayout(layout)
 
@@ -56,33 +51,28 @@ class BHMap(QWidget):
 
     def generate_gpx(self):
         selected_neighborhood = self.combo_neighborhoods.currentText()
-        if selected_neighborhood:
-            coordinates = self.neighborhoods_data.get(selected_neighborhood)
-            if coordinates:
-                result = generate_gpx(selected_neighborhood, coordinates)
-                QMessageBox.information(self, "Success", result)
-            else:
-                QMessageBox.critical(self, "Error", "Coordinates not found for the selected neighborhood.")
-        else:
+        if not selected_neighborhood:
             QMessageBox.warning(self, "Warning", "Please select a neighborhood.")
+            return
 
-    def save_json(self):
-        if hasattr(self, 'neighborhoods_data') and self.neighborhoods_data:
-            file_path = "resources/neighborhoods.json"
+        coordinates = self.neighborhoods_data.get(selected_neighborhood)
+        if not coordinates:
+            QMessageBox.critical(self, "Error", "Coordinates not found for the selected neighborhood.")
+            return
 
-            if os.path.exists(file_path):
-                reply = QMessageBox.question(self, 'Confirm',
-                                             f"The file {file_path} already exists. Do you want to replace it?",
-                                             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                                             QMessageBox.StandardButton.No)
-                if reply == QMessageBox.StandardButton.No:
-                    return
+        # Open a file dialog to choose the save location
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save GPX File",
+            f"{selected_neighborhood.replace(' ', '_')}.gpx",  # Default file name
+            "GPX Files (*.gpx)"
+        )
 
+        if file_path:
             try:
-                with open(file_path, 'w', encoding='utf-8') as f:
-                    json.dump(self.neighborhoods_data, f, ensure_ascii=False, indent=4)
-                QMessageBox.information(self, "Success", f"File {file_path} saved successfully!")
+                result = generate_gpx(selected_neighborhood, coordinates, file_path)
+                QMessageBox.information(self, "Success", f"GPX file saved successfully at {file_path}.")
             except Exception as e:
-                QMessageBox.critical(self, "Error", f"Error saving the file: {str(e)}")
+                QMessageBox.critical(self, "Error", f"Failed to save GPX file: {e}")
         else:
-            QMessageBox.warning(self, "Warning", "No data to save.")
+            QMessageBox.information(self, "Information", "Save operation was canceled.")

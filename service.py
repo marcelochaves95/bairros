@@ -61,10 +61,12 @@ def fetch_neighborhoods():
         driver.quit()
         raise RuntimeError(f"Error fetching the data: {e}")
 
-def generate_gpx(selected_neighborhood, coordinates, elevation=1045.55):
+def generate_gpx(selected_neighborhood, coordinates, file_path, elevation=1045.55):
     gpx = ET.Element("gpx", version="1.1", creator="BH Map", xmlns="http://www.topografix.com/GPX/1/1")
+
     trk = ET.SubElement(gpx, "trk")
     ET.SubElement(trk, "name").text = selected_neighborhood
+
     trkseg = ET.SubElement(trk, "trkseg")
 
     for polygon in coordinates:
@@ -80,8 +82,8 @@ def generate_gpx(selected_neighborhood, coordinates, elevation=1045.55):
     rough_string = ET.tostring(gpx, encoding='utf-8')
     reparsed = minidom.parseString(rough_string)
 
-    file_path = f"resources/{selected_neighborhood.replace(' ', '_')}.gpx"
     with open(file_path, "w", encoding="UTF-8") as f:
         f.write(reparsed.toprettyxml(indent="  "))
 
-    return f"{file_path} GPX generated successfully!"
+    return f"GPX file saved successfully at {file_path}."
+
