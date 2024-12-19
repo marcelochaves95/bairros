@@ -10,7 +10,7 @@ class BHMap(QWidget):
         self.load_neighborhoods()
 
     def init_ui(self):
-        self.setWindowTitle("Mapa BH")
+        self.setWindowTitle("Bairros")
         self.setGeometry(200, 200, 400, 300)
 
         icon_path = "assets/icon.ico"
