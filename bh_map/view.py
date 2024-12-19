@@ -12,7 +12,7 @@ class BHMap(QWidget):
         self.setWindowTitle("BH Map")
         self.setGeometry(200, 200, 400, 300)
 
-        icon_path = "icon.png"
+        icon_path = "assets/icon.ico"
         self.setWindowIcon(QIcon(icon_path))
 
         layout = QVBoxLayout()
