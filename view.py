@@ -68,7 +68,7 @@ class BHMap(QWidget):
 
     def save_json(self):
         if hasattr(self, 'neighborhoods_data') and self.neighborhoods_data:
-            file_path = "neighborhoods.json"
+            file_path = "resources/neighborhoods.json"
 
             if os.path.exists(file_path):
                 reply = QMessageBox.question(self, 'Confirm',

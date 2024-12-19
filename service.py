@@ -25,7 +25,7 @@ def convert_utm_to_latitude_and_longitude(x, y):
     transformer = Transformer.from_proj(utm_proj, latlon_proj)
     return transformer.transform(x, y)
 
-def save_neighborhoods_to_json(data, file_path="neighborhoods.json"):
+def save_neighborhoods_to_json(data, file_path="resources/neighborhoods.json"):
     if os.path.exists(file_path):
         response = input(f"The file {file_path} already exists. Do you want to overwrite? (y/n): ")
         if response.lower() != 'y':
@@ -80,7 +80,8 @@ def generate_gpx(selected_neighborhood, coordinates, elevation=1045.55):
     rough_string = ET.tostring(gpx, encoding='utf-8')
     reparsed = minidom.parseString(rough_string)
 
-    with open(f"{selected_neighborhood.replace(' ', '_')}.gpx", "w", encoding="UTF-8") as f:
+    file_path = f"resources/{selected_neighborhood.replace(' ', '_')}.gpx"
+    with open(file_path, "w", encoding="UTF-8") as f:
         f.write(reparsed.toprettyxml(indent="  "))
 
-    return f"{selected_neighborhood} GPX generated successfully!"
+    return f"{file_path} GPX generated successfully!"
