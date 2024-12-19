@@ -1,3 +1,4 @@
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QVBoxLayout, QPushButton, QLabel, QWidget, QMessageBox, QComboBox, QLineEdit, QHBoxLayout
 from service import fetch_neighborhoods, generate_gpx
 import json
@@ -39,7 +40,15 @@ class BHMap(QWidget):
                 self.combo_neighborhoods.setEditable(True)
                 self.combo_neighborhoods.addItems(neighborhoods.keys())
                 self.neighborhoods_data = neighborhoods
-                self.label.setText("Choose a neighborhood and click 'Generate GPX'.")
+                self.label.setText("Choose a neighborhood and click Generate GPX")
+                self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                self.label.setStyleSheet("""
+                    font-size: 16px; 
+                    font-weight: bold; 
+                    text-align: center;
+                    margin: 10px 0;
+                """)
+
             else:
                 self.label.setText("No neighborhoods found.")
         except RuntimeError as e:
