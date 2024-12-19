@@ -1,4 +1,4 @@
 # Bairros
 Ferramenta para geração de GPX a partir dos bairros de Belo Horizonte.
 
-![](assets/bh-map.png)
+![](assets/bairros.png)
