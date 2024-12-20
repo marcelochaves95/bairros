@@ -25,17 +25,6 @@ def convert_utm_to_latitude_and_longitude(x, y):
     transformer = Transformer.from_proj(utm_proj, latlon_proj)
     return transformer.transform(x, y)
 
-def save_neighborhoods_to_json(data, file_path="resources/neighborhoods.json"):
-    if os.path.exists(file_path):
-        response = input(f"O arquivo {file_path} já existe. Deseja sobrescrevê-lo? (s/n): ")
-        if response.lower() != 's':
-            print("O arquivo não foi sobrescrito.")
-            return
-
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
-    print(f"Arquivo {file_path} salvo com sucesso!")
-
 def fetch_neighborhoods():
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
