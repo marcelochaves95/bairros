@@ -15,17 +15,12 @@ pip install -r requirements.txt
 ```
 
 ## Uso
-1. Navegue até a pasta do arquivo principal:
-```
-cd bairros
-```
-
-2. Execute o script principal:
+1. Execute o script principal:
 ```
 python main.py
 ```
 
-3. Siga os passos na interface:
+2. Siga os passos na interface:
 - Carregue a lista de bairros.
 - Selecione um bairro.
 - Gere e salve o arquivo GPX correspondente.
