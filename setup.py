@@ -6,7 +6,7 @@ with open("requirements.txt", "r", encoding="utf-8") as f:
 setup(
     name="bairros",
     version="1.0.0",
-    description="Ferramenta para geração de arquivos GPX a partir de mapas de bairros de Belo Horizonte.",
+    description="Ferramenta para gerar GPX de bairros de Belo Horizonte.",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     author="Marcelo Chaves",
