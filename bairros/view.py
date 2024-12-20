@@ -1,9 +1,9 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QVBoxLayout, QFileDialog, QPushButton, QLabel, QWidget, QMessageBox, QComboBox
-from service import fetch_neighborhoods, generate_gpx
+from bairros.service import fetch_neighborhoods, generate_gpx
 
-class BHMap(QWidget):
+class Bairros(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
